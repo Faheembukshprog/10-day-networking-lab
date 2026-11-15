@@ -1,9 +1,9 @@
-# 🌐 10-Day Networking & Protocol Fundamentals Lab 🚀🛡️
+# 🌐 10-Day Networking & Protocol Fundamentals Lab
 
-![License: MIT](https://img.shields.io/badge/license-MIT-2563EB?style=for-the-badge)
-![Repository status: Active](https://img.shields.io/badge/status-Active-16A34A?style=for-the-badge)
-![Branch: Main](https://img.shields.io/badge/branch-main-475569?style=for-the-badge)
-![Tech stack](https://img.shields.io/badge/tools-PowerShell%20%7C%20Packet%20Tracer%20%7C%20Wireshark-0EA5E9?style=for-the-badge)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2563EB?style=flat-square)](LICENSE)
+![Repository status: Active](https://img.shields.io/badge/status-Active-16A34A?style=flat-square)
+![Branch: Main](https://img.shields.io/badge/branch-main-475569?style=flat-square)
+![Tech stack](https://img.shields.io/badge/tools-PowerShell%20%7C%20Packet%20Tracer%20%7C%20Wireshark-0EA5E9?style=flat-square)
 
 Build practical networking knowledge in ten focused days. This hands-on roadmap
 starts with Layer 2 and Layer 3 fundamentals, then progresses through network
