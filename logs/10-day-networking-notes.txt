@@ -1,0 +1,167 @@
+================================================================================
+                        10-DAY NETWORKING CHALLENGE LOG
+================================================================================
+
+[ DAY 01: NETWORK IDENTITY & IPCONFIG BREAKDOWN ]
+Date: November 14, 2026
+Command Used: ipconfig /all
+
+--------------------------------------------------------------------------------
+1. CORE DAY 1 TARGETS (DEFINITIONS & MY VALUES)
+--------------------------------------------------------------------------------
+
+1. Interface
+   - My Value   : Ethernet (Realtek PCIe GbE Family Controller)
+   - Definition : The physical network port or card inside my PC that connects
+                  to the network cable.
+
+2. MAC Address (Physical Address)
+   - My Value   : FC-AA-14-57-83-4B
+   - Definition : The permanent hardware ID burned into my network card at the
+                  factory. Used to identify my device on the local network.
+
+3. IP Address (IPv4)
+   - My Value   : 192.168.0.107
+   - Definition : The temporary logical address given to my PC on the network
+                  so data knows where to go.
+
+4. Prefix (Subnet Mask)
+   - My Value   : 255.255.255.0  (/24)
+   - Definition : The boundary marker that splits my IP into two parts:
+                  192.168.0 (My Network) and .107 (My Specific PC).
+
+5. Default Gateway
+   - My Value   : 192.168.0.1
+   - Definition : My router's IP address. It acts as the "exit door" when my
+                  PC wants to reach anything outside my local home network.
+
+6. DNS Server
+   - My Value   : 192.168.0.1
+   - Definition : The internet's phonebook. It translates human website names
+                  (like google.com) into computer IP addresses.
+
+--------------------------------------------------------------------------------
+2. COMPLETE IPCONFIG /ALL BREAKDOWN (MULTILEVEL NOTES)
+--------------------------------------------------------------------------------
+
+A. Windows IP Configuration (General PC Identity)
+   1. Host Name : DESKTOP-S4UPLER
+      - Note: My computer's local name on the network.
+   2. Primary DNS Suffix : (Blank)
+      - Note: Empty because this is a home PC, not joined to a corporate domain.
+   3. Node Type : Hybrid
+      - Note: How Windows resolves local computer names (uses a mix of server
+              queries and local network broadcasts).
+   4. IP Routing Enabled : No
+      - Note: My PC acts as an end-device, not a router forwarding traffic
+              between different networks.
+   5. WINS Proxy Enabled : No
+      - Note: Legacy Windows name-resolution feature (turned off/not needed).
+   6. DNS Suffix Search List : www.mtlinkwifi.com
+      - Note: The domain name automatically provided by my ISP/router.
+
+B. Ethernet Adapter Ethernet (Active Connection Details)
+   1. Connection-specific DNS Suffix : www.mtlinkwifi.com
+      - Note: The network domain assigned specifically to this Ethernet port.
+   2. Description : Realtek PCIe GbE Family Controller
+      - Note: The exact hardware brand/model of my wired network chip.
+   3. Physical Address : FC-AA-14-57-83-4B
+      - Note: My permanent MAC address (first 3 pairs = manufacturer ID).
+   4. DHCP Enabled : Yes
+      - Note: My PC gets its IP address automatically from the router instead
+              of me typing it in manually.
+   5. Autoconfiguration Enabled : Yes
+      - Note: Allows Windows to assign itself a fallback IP (169.254.x.x) if
+              the router fails to give one.
+   6. Link-local IPv6 Address : fe80::82b:9711:539e:7740%3
+      - Note: An automatic IPv6 address used strictly for talking to devices
+              on the exact same local link/cable.
+   7. IPv4 Address : 192.168.0.107 (Preferred)
+      - Note: My main active IP address on the home network.
+   8. Subnet Mask : 255.255.255.0
+      - Note: Equals /24 prefix (allows 254 usable devices on 192.168.0.x).
+   9. Lease Obtained / Lease Expires : Nov 14, 4:45 PM -> Nov 15, 5:00 PM
+      - Note: My IP is rented for ~24 hours; Windows automatically renews it.
+  10. Default Gateway : 192.168.0.1
+      - Note: The local IP of my home router.
+  11. DHCP Server : 192.168.0.1
+      - Note: The device that handed out my IP address (my router).
+  12. DHCPv6 IAID & Client DUID : 251439636 / 00-01-00-01-...
+      - Note: Unique IDs used if requesting an IPv6 address via DHCPv6.
+  13. DNS Servers : 192.168.0.1
+      - Note: My PC sends website name lookups to my router first.
+  14. NetBIOS over Tcpip : Enabled
+      - Note: Allows older Windows file/printer sharing discovery on the LAN.
+
+================================================================================
+                              [ END OF DAY 01 ]
+================================================================================
+
+[ DAY 02: ARP OBSERVATION, PING & CACHE EXPERIMENT ]
+Date: November 15, 2026
+Commands Used: ping 192.168.0.1, arp -a, arp -d
+
+--------------------------------------------------------------------------------
+1. CORE DAY 2 TARGETS (DEFINITIONS & MY VALUES)
+--------------------------------------------------------------------------------
+
+1. Ping (ICMP Echo Request/Reply)
+   - My Result  : 4 Sent, 4 Received, 0% Loss (Avg: 0ms, TTL: 64)
+   - Definition : A network diagnostic tool that sends tiny test packets (ICMP)
+                  to another device to check if it is reachable and measure speed.
+
+2. ARP (Address Resolution Protocol)
+   - My Result  : Mapped 192.168.0.1 -> e8-65-d4-9a-74-b0
+   - Definition : The translator between Layer 3 (IP) and Layer 2 (MAC). It asks
+                  "Who has this IP?" on the local network to get its MAC address.
+
+3. ARP Cache (ARP Table)
+   - My Result  : Interface 192.168.0.107 --- 0x3
+   - Definition : A temporary memory list on my PC storing recently discovered
+                  IP-to-MAC address pairs so it doesn't have to ask every time.
+
+4. Dynamic vs. Static ARP Entries
+   - My Result  : 192.168.0.1 (dynamic) | 192.168.0.255 (static)
+   - Definition : Dynamic entries are learned automatically and expire over time;
+                  static entries are permanent rules (like broadcast/multicast).
+
+--------------------------------------------------------------------------------
+2. COMPLETE EXPERIMENT & COMMAND BREAKDOWN (MULTILEVEL NOTES)
+--------------------------------------------------------------------------------
+
+A. Ping Connectivity Test (ping 192.168.0.1)
+   1. Payload Size : 32 bytes
+      - Note: Standard Windows ICMP test packet size sent to the router.
+   2. Round Trip Time (RTT) : <1ms to 2ms
+      - Note: Extremely fast response proving a direct, healthy local wired link.
+   3. TTL (Time To Live) : 64
+      - Note: Packet hop counter; 64 is the standard starting value for Linux/
+              embedded router operating systems (like my MT-Link router).
+   4. Packet Loss : 0% (4/4 packets returned)
+      - Note: Confirms stable Layer 3 communication with the default gateway.
+
+B. ARP Table Inspection & Cache Flush Experiment (arp -a & arp -d)
+   1. Initial Cache State (arp -a) :
+      - Note: Showed 192.168.0.1 mapped to e8-65-d4-9a-74-b0 (dynamic), along
+              with broadcast (ff-ff-ff-ff-ff-ff) and multicast (01-00-5e-...) MACs.
+   2. Flushing the Cache (arp -d) :
+      - Note: Executed in Administrator PowerShell to wipe all dynamic IP-to-MAC
+              mappings from my PC's memory.
+   3. Triggering Rediscovery (ping 192.168.0.1) :
+      - Note: Because the MAC address was wiped, my PC had to broadcast an ARP
+              request ("Who has 192.168.0.1?") before sending the ping packets.
+   4. Post-Ping Verification (arp -a) :
+      - Note: 192.168.0.1 -> e8-65-d4-9a-74-b0 immediately reappeared as a
+              dynamic entry, proving automatic Layer 2 address resolution works.
+
+C. Key Takeaways & Security Relevance
+   1. Layer 2 & Layer 3 Teamwork :
+      - Note: Software uses IP addresses (Layer 3), but network cards need MAC
+              addresses (Layer 2) to actually deliver frames across the wire.
+   2. Security Implication (ARP Spoofing) :
+      - Note: Because ARP trusts any reply on the local network without checking
+              identity, attackers can send fake ARP replies (MITM attacks).
+
+================================================================================
+                              [ END OF DAY 02 ]
+================================================================================
