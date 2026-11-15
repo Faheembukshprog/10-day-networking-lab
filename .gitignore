@@ -1,2 +1,12 @@
-*.tmp 
+*.tmp
 *.log
+
+# Cache and temporary directories
+.cache/
+__pycache__/
+.pytest_cache/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
