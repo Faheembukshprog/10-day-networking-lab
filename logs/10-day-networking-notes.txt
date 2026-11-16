@@ -165,3 +165,32 @@ C. Key Takeaways & Security Relevance
 ================================================================================
                               [ END OF DAY 02 ]
 ================================================================================
+
+================================================================================
+[ DAY 03: CISCO PACKET TRACER - BASIC IPv4 CONFIGURATION & INTER-SUBNET ROUTING ]
+================================================================================
+Lab File: basic-IPv4-Configuration-start.pkt (Cisco 2911 Router R1, 3x 2960 Switches, 3x PCs)
+
+1. OBJECTIVES:
+   - Configure IPv4 addresses, subnet masks (/24), descriptions, and link states on Cisco IOS router R1.
+   - Verify interface status via Cisco IOS CLI and save running-config to NVRAM startup-config.
+   - Assign static IPv4 configurations and default gateways across three isolated LAN subnets.
+   - Validate end-to-end Layer 3 inter-subnet routing via ICMP echo requests (ping).
+
+2. CONFIGURATIONS EXECUTED:
+   - Router R1 (Cisco IOS 15.1):
+     * GigabitEthernet0/0: 10.0.30.254/24 | Description: LAN1 - SW3 (10.0.30.0/24) | State: up/up
+     * GigabitEthernet0/1: 172.16.20.254/24 | Description: LAN3 - SW2 (172.16.20.0/24) | State: up/up
+     * GigabitEthernet0/2: 192.168.10.254/24 | Description: LAN2 - SW1 (192.168.10.0/24) | State: up/up
+     * Saved configuration via `copy running-config startup-config`.
+   - End Devices:
+     * PC1: IP 10.0.30.1 | Mask 255.255.255.0 | Gateway 10.0.30.254
+     * PC2: IP 192.168.10.1 | Mask 255.255.255.0 | Gateway 192.168.10.254
+     * PC3: IP 172.16.20.1 | Mask 255.255.255.0 | Gateway 172.16.20.254
+
+3. VERIFICATION & KEY OBSERVATIONS:
+   - `show ip interface brief` confirmed all three GigabitEthernet interfaces active (`up / up`).
+   - Inter-subnet pings from PC1 (10.0.30.1) to PC2 (192.168.10.1) and PC3 (172.16.20.1) succeeded.
+   - Observed initial ICMP timeout (25% loss on cold ARP cache) followed by 3 replies at TTL=127 (confirming 1 router hop decrement through R1).
+   - Learned Cisco IOS CLI quirk: unrecognized commands trigger DNS broadcast lookups (`255.255.255.255`), aborted via `Ctrl+Shift+6` or prevented with `no ip domain-lookup`.
+================================================================================
