@@ -333,3 +333,153 @@ Command: python -m http.server 8080
 ================================================================================
                               [ END OF DAY 06 ]
 ================================================================================
+
+================================================================================
+[ DAY 07: METASEARCH PROBE & ENDPOINT BEHAVIOR (NO-DOCKER ADAPTATION) ]
+================================================================================
+Date: November 23, 2026
+Host: DESKTOP-S4UPLER
+Working Directory: day7-metasearch/
+Command: python .\metasearch_probe.py "subnetting cidr"
+
+1. CONTEXT & ADAPTATION:
+   - Skipped local Docker hosting because of hard-drive failure and storage
+     constraints.
+   - Created `day7-metasearch/metasearch_probe.py` using Python's standard
+     library to compare search and metasearch endpoint behavior directly.
+   - Kept `4get/` and `searxng/` directories alongside the probe for hosting
+     configuration experiments.
+
+2. PROBE OUTPUT & OBSERVATIONS:
+   - `searxng-json`: Failed after 275.9 ms with
+     `<urlopen error [Errno 11001] getaddrinfo failed>`, indicating a DNS
+     lookup failure or unavailable public instance.
+   - `ddg-instant`: HTTP 200 after 6103.1 ms; content type
+     `application/x-javascript`, server `nginx`.
+   - `wikipedia-opensearch`: HTTP 200 after 1028.0 ms; content type
+     `application/json; charset=utf-8`, server
+     `mw-api-ext.codfw.main-5d6f6866f6-97z55`.
+
+3. NETWORKING TAKEAWAYS:
+   - Public search endpoints differ in availability, DNS resolution, response
+     headers, and latency.
+   - Comparing successful response times (~1.0 s and ~6.1 s) with the DNS
+     failure illustrates why network clients need timeouts and resilient
+     fallback behavior.
+
+================================================================================
+                              [ END OF DAY 07 ]
+================================================================================
+
+================================================================================
+[ DAY 08: ISOLATED NETWORK SECURITY LAB - SOCKET AUDIT & FIREWALL BOUNDARIES ]
+================================================================================
+Date: November 23, 2026
+Host: DESKTOP-S4UPLER
+Working Directory: day8-security-lab/
+Listener Command: python -m http.server 8088 --bind 127.0.0.1
+
+1. LOOPBACK LISTENER & PROCESS MAPPING:
+   - Started a Python HTTP listener bound to loopback address `127.0.0.1` on
+     port `8088`.
+   - `Get-NetTCPConnection -LocalPort 8088` reported local address
+     `127.0.0.1`, state `Listen`, and owning process ID `6128`.
+   - `Get-Process -Id 6128` identified the owning process as `python`.
+
+2. FIREWALL PRIVILEGE TEST & OBSERVATIONS:
+   - Attempted `New-NetFirewallRule`, `Get-NetFirewallRule`, and
+     `Remove-NetFirewallRule` for `Day8-Lab-Test-8088` in a non-elevated
+     PowerShell session.
+   - All three commands returned `Access is denied`, demonstrating that these
+     firewall operations were blocked by the current session's permissions.
+
+3. SECURITY TAKEAWAYS:
+   - Binding a local test service to `127.0.0.1` limits it to the local host
+     rather than exposing it through other network interfaces.
+   - Mapping a listening socket's owning process helps identify the executable
+     associated with a local port.
+   - Firewall configuration is privilege-sensitive; loopback behavior and
+     inbound access from other hosts are distinct cases.
+
+================================================================================
+                              [ END OF DAY 08 ]
+================================================================================
+
+================================================================================
+[ DAY 09: DELIBERATELY VULNERABLE TRAINING LAB - REFLECTION & HEADERS AUDIT ]
+================================================================================
+Date: November 23, 2026
+Host: DESKTOP-S4UPLER
+Working Directory: day9-vuln-lab/
+Server Command: python .\day9-vuln-lab\vuln_demo.py (127.0.0.1:8090)
+
+1. ENDPOINT TESTING & OBSERVATIONS:
+   - `/reflect-unsafe?name=<b>test</b>` returned
+     `<p>Welcome, <b>test</b></p>` and exposed
+     `X-Powered-By: Day9-Insecure-Demo/0.1`. The parameter was reflected into
+     HTML without encoding, and the response disclosed an implementation
+     identifier.
+   - `/reflect-safe?name=<b>test</b>` returned
+     `<p>Welcome, &lt;b&gt;test&lt;/b&gt;</p>`. The characters were HTML-encoded,
+     so the supplied markup was treated as text. The response also included
+     `Content-Security-Policy: default-src 'self'`.
+   - `/debug-info` returned JSON exposing `bound_interface` (`127.0.0.1`),
+     `port` (`8090`), and the lab note (`HTTP 200`).
+
+2. SECURITY CONCEPTS & TAKEAWAYS:
+   - **Reflected input:** Data from a request parameter that is included in the
+     response. Rendering it as raw HTML can create cross-site scripting (XSS)
+     risk when an attacker-controlled value is interpreted by a browser.
+   - **Context-aware output encoding:** Escaping HTML characters with
+     `html.escape` converts markup delimiters to text entities and prevents
+     this reflected value from being interpreted as HTML in the tested
+     context.
+   - **Security headers:** A Content Security Policy (CSP) can restrict which
+     resources a page may load. `X-Content-Type-Options: nosniff` and
+     `X-Frame-Options: DENY` are additional examples that help reduce browser
+     content-sniffing and framing risks.
+   - **Information disclosure:** Removing or limiting `X-Powered-By` and
+     restricting debug endpoints reduces implementation details exposed to
+     clients.
+   - **Safe lab boundary:** Binding the demonstration server to `127.0.0.1`
+     keeps this exercise local to the host; it should remain a deliberately
+     vulnerable training demo and not be exposed as a production service.
+
+================================================================================
+                              [ END OF DAY 09 ]
+================================================================================
+
+================================================================================
+[ DAY 10: CHALLENGE REVIEW, SUMMARY & REFLECTION ]
+================================================================================
+Date: November 23, 2026
+Host: DESKTOP-S4UPLER
+Repository: 10-day-networking-lab
+
+1. CORE LESSONS ACROSS DAYS 01–09:
+   - **Addressing and reachability (Days 01–02):** IP addresses, subnet
+     boundaries, gateways, DNS, ARP caching, and ICMP diagnostics provide the
+     foundation for understanding how devices locate and reach one another.
+   - **Routing and packet flow (Days 03–05):** A link reported as `up/up` does
+     not by itself guarantee correct addressing or routing. Traceroute TTL
+     behavior helps reveal network hops, while packet and wireless-protocol
+     analysis expose how communication is carried and secured.
+   - **Local services and resilience (Days 06–07):** Loopback listeners
+     (`127.0.0.1`) support local testing. External endpoints can vary in DNS
+     availability, response time, and returned metadata, so network clients
+     should use timeouts and handle failures with appropriate fallbacks.
+   - **Practical security (Days 08–09):** Least privilege, loopback isolation,
+     process-to-port auditing, context-aware output encoding, restricted debug
+     information, and security headers contribute to layered defenses.
+
+2. REFLECTION:
+   - Completed the ten-day learning plan, adapting the exercises to available
+     hardware and storage constraints.
+   - Documented the experiments and observations in this repository for future
+     review and continued practice.
+   - Keep future security exercises confined to authorized, isolated lab
+     environments.
+
+================================================================================
+                              [ END OF DAY 10 ]
+================================================================================
